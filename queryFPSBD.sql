@@ -7,21 +7,23 @@ WHERE NO_SISWA = 'S0002';
 
 --KURSUS YANG SEDANG DIAMBIL;;
 SELECT pk.pk_tglmulai as "Tgl. Mulai", cbg.cbg_lokasi as "Cabang Kursus", lv.lv_nama as "Level", p.p_nama as "Pengajar", pk.pk_nama as "Nama Kursus"
-FROM pengajar p, paket_kursus pk, cabang cbg, level_table lv, siswa s, detil_kursus dk
+FROM pengajar p, paket_kursus pk, cabang cbg, level_table lv, siswa s, detil_kursus dk, kelas k
 WHERE s.NO_SISWA = dk.NO_SISWA
 AND pk.pk_id = dk.pk_id
 AND lv.lv_id = pk.lv_id
 AND cbg.cbg_id = pk.cbg_id
 AND p.pengajar_id = pk.pengajar_id
+AND k.k_id = pk.k_id
 AND s.NO_SISWA = 'S0002'
 AND dk.status_tes IS NULL;
 
 -- RIWAYAT KURSUS --
 SELECT pk.pk_tglselesai as "Tgl. Selesai", cbg.cbg_lokasi as "Cabang Kursus", lv.lv_nama as "Level", pk.pk_nama as "Nama Kursus", dk.nilai as "Nilai", dk.status_tes as "Status"
-FROM pengajar p, paket_kursus pk, cabang cbg, level_table lv, siswa s, detil_kursus dk
+FROM pengajar p, paket_kursus pk, cabang cbg, level_table lv, siswa s, detil_kursus dk, kelas k
 WHERE s.NO_SISWA = dk.NO_SISWA
 AND pk.pk_id = dk.pk_id
 AND lv.lv_id = pk.lv_id
+AND k.k_id = pk.k_id
 AND cbg.cbg_id = pk.cbg_id
 AND p.pengajar_id = pk.pengajar_id
 AND s.NO_SISWA = 'S0002'
@@ -34,22 +36,25 @@ AND dk.status_tes IS NOT NULL;
 
 -- RATA RATA PROSENTASE SISWA LULUS PER LEVEL CAB. KERTAJAYA --
 SELECT lv.lv_nama, AVG(dk.nilai) AS Ratanilai
-FROM pengajar p, paket_kursus pk, cabang cbg, level_table lv, siswa s, detil_kursus dk
+FROM pengajar p, paket_kursus pk, cabang cbg, level_table lv, siswa s, detil_kursus dk, kelas k
 WHERE s.NO_SISWA = dk.NO_SISWA
 AND pk.pk_id = dk.pk_id
 AND lv.lv_id = pk.lv_id
 AND cbg.cbg_id = pk.cbg_id
+AND k.k_id = pk.k_id
 AND p.pengajar_id = pk.pengajar_id
 AND cbg.cbg_id = 'CB001'
 AND dk.status_tes = 'LULUS'
-GROUP BY lv.lv_nama;
+GROUP BY lv.lv_nama
+ORDER BY avg(dk.nilai) DESC;
 
 -- LIMA PAKET KURSUS TERPOPULER 2017 (SEMUA CABANG) --
 SELECT * FROM ( SELECT pk.pk_nama as "Nama Paket", count(pk.pk_nama) as "Jml. Peserta" 
-FROM pengajar p, paket_kursus pk, cabang cbg, level_table lv, siswa s, detil_kursus dk
+FROM pengajar p, paket_kursus pk, cabang cbg, level_table lv, siswa s, detil_kursus dk, kelas k
 WHERE s.NO_SISWA = dk.NO_SISWA
 AND pk.pk_id = dk.pk_id
 AND lv.lv_id = pk.lv_id
+AND k.k_id = pk.k_id
 AND cbg.cbg_id = pk.cbg_id
 AND p.pengajar_id = pk.pengajar_id
 GROUP BY pk.pk_nama
@@ -59,9 +64,10 @@ WHERE ROWNUM <= 5;
 
 -- PENGHARGAAN UNTUK PENGAJAR TERBAIK 2017 DI CABANG MANYAR --
 SELECT p.p_nama as "Pengajar", pk.pk_nama as "Nama Kursus", avg(dk.nilai) as "Rata-rata Nilai Kelas", pk.pk_tglmulai as "Tgl Mulai Kursus", pk.pk_tglselesai as "Tgl Selesai Kursus"
-FROM pengajar p, paket_kursus pk, cabang cbg, level_table lv, siswa s, detil_kursus dk
+FROM pengajar p, paket_kursus pk, cabang cbg, level_table lv, siswa s, detil_kursus dk, kelas k
 WHERE s.NO_SISWA = dk.NO_SISWA
 AND pk.pk_id = dk.pk_id
+AND k.k_id = pk.k_id
 AND lv.lv_id = pk.lv_id
 AND cbg.cbg_id = pk.cbg_id
 AND p.pengajar_id = pk.pengajar_id

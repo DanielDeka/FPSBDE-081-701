@@ -32,12 +32,13 @@ CREATE TABLE paket_kursus(
  pk_id		CHAR(5) NOT NULL PRIMARY KEY,
  cbg_id		CHAR(5) NOT NULL,
  lv_id		CHAR(5) NOT NULL,
+ k_id       CHAR(5) NOT NULL,
  pengajar_id	CHAR(5) NOT NULL,
  pk_nama	VARCHAR(100),
  pk_deskripsi VARCHAR(300),
  pk_tarif	INTEGER,
  pk_tglmulai	DATE,
- pk_tglselesai	DATE,
+ pk_tglselesai	DATE
 );
 
 CREATE TABLE detil_kursus(
@@ -45,6 +46,10 @@ CREATE TABLE detil_kursus(
  no_siswa	CHAR(5) NOT NULL,
  status_tes	VARCHAR(10),
  nilai		integer
+);
+
+CREATE TABLE KELAS(
+ k_id	char(5) NOT NULL PRIMARY KEY
 );
 
 -- Creating Relations --
@@ -55,6 +60,8 @@ ALTER TABLE paket_kursus
 ADD CONSTRAINT fk_lv_id FOREIGN KEY (lv_id) REFERENCES level_table(lv_id);
 ALTER TABLE paket_kursus
 ADD CONSTRAINT fk_cbg_id FOREIGN KEY (cbg_id) REFERENCES CABANG(cbg_id);
+ALTER TABLE paket_kursus
+ADD CONSTRAINT fk_k_id FOREIGN KEY (k_id) REFERENCES KELAS(k_id);
 ALTER TABLE detil_kursus
 ADD CONSTRAINT fk_dk_pk FOREIGN KEY (pk_id)	REFERENCES paket_kursus(pk_id);
 ALTER TABLE detil_kursus
